@@ -1,8 +1,9 @@
 version: "3.8"
-
 services:
   app:
-    image: ghcr.io/andrii-kryvoviaz/slink:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: slink-app
     environment:
       APP_URL: ${APP_URL}
@@ -18,7 +19,6 @@ services:
     ports:
       - "8080:80"
     restart: unless-stopped
-
   db:
     image: mariadb:10.11
     container_name: slink-db
@@ -30,6 +30,5 @@ services:
     volumes:
       - db_data:/var/lib/mysql
     restart: unless-stopped
-
 volumes:
   db_data:
