@@ -1,33 +1,23 @@
 version: "3.8"
 services:
   app:
-    # Utiliser l'image officielle depuis Docker Hub
-    image: slinkapp/slink:latest
+    # Essayer l'image du dépôt original
+    image: ghcr.io/andrii-kryvoviaz/slink:main
+    # Alternative : image: andriikryvoviaz/slink:latest
     container_name: slink-app
     environment:
-      # Configuration de base
-      APP_ENV: prod
-      APP_DEBUG: "false"
       APP_URL: ${APP_URL}
       APP_SECRET: ${APP_SECRET}
-      
-      # Configuration base de données
-      DATABASE_URL: "mysql://${DB_USERNAME}:${DB_PASSWORD}@db:3306/${DB_DATABASE}"
-      
-      # Configuration PHP
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: ${DB_DATABASE}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
       PHP_MEMORY_LIMIT: ${PHP_MEMORY_LIMIT:-512M}
-      
-      # Configuration Slink spécifique
-      STORAGE_PROVIDER: local
-      MAX_UPLOAD_SIZE: 50M
-      
     depends_on:
       - db
     ports:
       - "8080:80"
-    volumes:
-      - slink_storage:/var/www/html/storage
-      - slink_uploads:/var/www/html/public/uploads
     restart: unless-stopped
 
   db:
@@ -41,9 +31,6 @@ services:
     volumes:
       - db_data:/var/lib/mysql
     restart: unless-stopped
-    command: --default-authentication-plugin=mysql_native_password
 
 volumes:
   db_data:
-  slink_storage:
-  slink_uploads:
